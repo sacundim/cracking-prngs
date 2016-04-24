@@ -23,6 +23,7 @@ public class Main {
         long seed = guessSeed(v1, v2);
         System.out.printf("Guessed seed: 0x%016x.  Testing...\n", seed);
         testGuess(seed, target);
+        System.out.println("Success!!!");
     }
 
     private static void testGuess(long seed, Random target) {
