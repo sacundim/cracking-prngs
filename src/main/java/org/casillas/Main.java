@@ -22,23 +22,14 @@ public class Main {
         int v2 = target.nextInt();
         long seed = guessSeed(v1, v2);
         System.out.printf("Guessed seed: 0x%016x.  Testing...\n", seed);
-        testGuess(seed, target);
+        testGuess(seed, target, v2);
         System.out.println("Success!!!");
     }
 
-    private static void testGuess(long seed, Random target) {
-        Random experiment = new Random(seed);
-        experiment.nextInt();
-        for (int i = 0; i < 100_000; i++) {
-            int expected = target.nextInt();
-            int actual = experiment.nextInt();
-            if (actual != expected) {
-                String msg = "i = %d, expected = 0x%08x, actual = 0x%08x";
-                throw new IllegalStateException(String.format(msg, i, expected, actual));
-            }
-        }
-    }
 
+    /**
+     * We can guess the state of the generator just from observing two consecutive {@code int}s.
+     */
     private static long guessSeed(int v1, int v2) {
         System.out.printf("v1 = 0x%08x, v2 = 0x%08x\n", v1, v2);
         return guessSeed(maskToLong(v1), maskToLong(v2));
@@ -51,7 +42,7 @@ public class Main {
                 return (guess ^ multiplier) & mask;
             }
         }
-        throw new IllegalStateException("Could not guess the seed!");
+        throw new IllegalStateException("CAN'T HAPPEN: Could not guess the seed!");
     }
 
     /**
@@ -59,6 +50,21 @@ public class Main {
      */
     private static long maskToLong(int n) {
         return n & 0x00000000ffffffffL;
+    }
+
+
+    private static void testGuess(long seed, Random target, int expected) {
+        Random experiment = new Random(seed);
+        int actual = experiment.nextInt();
+        for (int i = 0; i < 100_000; i++) {
+            if (actual != expected) {
+                // This will never actually happen.
+                String msg = "i = %d, expected = 0x%08x, actual = 0x%08x";
+                throw new IllegalStateException(String.format(msg, i, expected, actual));
+            }
+            expected = target.nextInt();
+            actual = experiment.nextInt();
+        }
     }
 
 }
