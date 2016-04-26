@@ -6,4 +6,5 @@ I take zero credit for this; the code was lifted and adapted from this blog entr
 * https://jazzy.id.au/2010/09/20/cracking_random_number_generators_part_1.html
 
 This program works successfully in Java 8, and I believe also in Java 7 but I haven't checked.  I'm pretty certain it
-won't work on Java 6.
+won't work on Java 6, because some of the constants in the `java.util.Random` class have changed, but it should be
+trivial to adapt it to that (the original blog entry used the Java 6 values after all).
